@@ -22,8 +22,8 @@ jobs:
           ref: ${{ github.event.inputs.githash }}
       - name: Set github var env
         run: |
-          echo "GITHASH=$(git describe --tags)" >> $GITHUB_ENV
-          echo "GITTAG=$(git describe --tags | awk -F "-" '{print $1}')" >> $GITHUB_ENV
+          echo "GITHASH=${GITHUB_SHA::8}" >> $GITHUB_ENV
+          echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
   
   dependencies:
     runs-on: ubuntu-latest
