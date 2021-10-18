@@ -43,7 +43,7 @@ jobs:
       - name: Get from Artifactory
         run: |
           jfrog rt ping
-          jfrog rt dl "default-maven-local/petclinic/2.5.0-SNAPSHOT/petclinic-2.5.0-SNAPSHOT.jar" petclinic_jarfile --flat=true
+          jfrog rt dl "default-maven-local/petclinic/2.5.0-SNAPSHOT/petclinic-2.5.0-SNAPSHOT.jar" petclinic.jar --flat=true
       - name: check jar file
         run: test -f petclinic_jarfile
       - name: copy file via ssh key
@@ -53,5 +53,5 @@ jobs:
           username: group2
           port: 22
           key: ${{ secrets.VM_AWS_CEFIM_KEY }}
-          source: "petclinic_jarfile"
-          target: "/home/group2/petclinic.jar"
+          source: "petclinic.jar"
+          target: "/home/group2/"
