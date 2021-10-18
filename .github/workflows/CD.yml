@@ -25,12 +25,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: wait artifactory
-        uses: lewagon/wait-on-check-action@v1.0.0
-        with:
-          ref: main
-          check-name: upload-artifactory
-          repo-token: ${{ secrets.LEWAGON_GITHUB_TOKEN }}
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
