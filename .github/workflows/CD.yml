@@ -69,5 +69,5 @@ jobs:
           port: 22
           key: ${{ secrets.VM_AWS_CEFIM_KEY }}
           script: |
-            kill `pgrep -u group2 java`
-            java -jar -Dserver.port=8082 petclinic.jar &
+            /home/group2/javaapp stop
+            /home/group2/javaapp start
