@@ -68,4 +68,4 @@ jobs:
       - name: Upload jar to artifactory
         run: |
           jfrog rt ping
-          jfrog rt u ./spring-petclinic-$GITHASH.jar "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
+          jfrog rt u ./spring-petclinic-${{ env.GITHASH }}.jar "default-maven-local/petclinic/${{ env.GITTAG }}/petclinic-${{ env.GITHASH }}.jar" --flat=true
