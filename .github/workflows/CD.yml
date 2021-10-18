@@ -29,6 +29,7 @@ jobs:
         with:
           ref: main
           check-name: upload-artifactory
+          repo-token: ${{ secrets.LEWAGON_GITHUB_TOKEN }}
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
