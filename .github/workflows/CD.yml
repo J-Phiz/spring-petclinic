@@ -45,7 +45,7 @@ jobs:
           jfrog rt ping
           jfrog rt dl "default-maven-local/petclinic/2.5.0-SNAPSHOT/petclinic-2.5.0-SNAPSHOT.jar" petclinic.jar --flat=true
       - name: check jar file
-        run: test -f petclinic_jarfile
+        run: test -f petclinic.jar
       - name: copy file via ssh key
         uses: appleboy/scp-action@master
         with:
@@ -55,3 +55,18 @@ jobs:
           key: ${{ secrets.VM_AWS_CEFIM_KEY }}
           source: "petclinic.jar"
           target: "/home/group2/"
+  launch:
+      # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: get-artifactory
+    
+    steps:
+      - name: start service
+        uses: appleboy/ssh-action@master
+        with:
+          host: cda.cefim-formation.org
+          username: group2
+          port: 22
+          key: ${{ secrets.VM_AWS_CEFIM_KEY }}
+          script: |
+            java -jar -Dserver.port=8082 petclinic.jar
