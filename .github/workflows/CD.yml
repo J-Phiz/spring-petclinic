@@ -43,7 +43,7 @@ jobs:
       - name: Get from Artifactory
         run: |
           jfrog rt ping
-          jfrog rt dl "default-maven-local/petclinic/2.5.0-SNAPSHOT/petclinic-2.5.0-SNAPSHOT.jar" petclinic_jarfile
+          jfrog rt dl "default-maven-local/petclinic/2.5.0-SNAPSHOT/petclinic-2.5.0-SNAPSHOT.jar" petclinic_jarfile --flat=true
       - name: check jar file
         run: test -f petclinic_jarfile
       - name: copy file via ssh key
