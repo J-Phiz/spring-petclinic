@@ -63,10 +63,9 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
-      - name: Upload jar to artifactory
-        env:
           GITHASH: $(git describe tags)
           GITTAG: $(git describe tags | awk -F "-" '{print $1}')
+      - name: Upload jar to artifactory
         run: |
           jfrog rt ping
           jfrog rt u ./spring-petclinic-$GITHASH.jar "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
