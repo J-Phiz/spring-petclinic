@@ -65,7 +65,8 @@ jobs:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
       - name: Upload jar to artifactory
         env:
-          GITHASH: $(git rev-parse --short "$GITHUB_SHA")
+          GITHASH: $(git describe tags)
+          GITTAG: $(git describe tags | awk -F "-" '{print $1}')
         run: |
           jfrog rt ping
-          jfrog rt u ./spring-petclinic-$GITHASH.jar "default-maven-local/petclinic/$GITHASH/petclinic-$GITHASH.jar" --flat=true
+          jfrog rt u ./spring-petclinic-$GITHASH.jar "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
