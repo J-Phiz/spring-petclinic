@@ -64,6 +64,5 @@ jobs:
           port: 22
           key: ${{ secrets.VM_AWS_CEFIM_KEY }}
           script: |
-            /home/group2/javaapp stop
-            /home/group2/javaapp start
-            exit
+            sudo systemctl stop petclinic@group2.service
+            sudo systemctl start petclinic@group2.service
