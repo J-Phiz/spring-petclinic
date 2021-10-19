@@ -81,22 +81,22 @@ jobs:
         run: mvn -B test --file pom.xml
   
   upload-artifactory:
-#    needs: [ build, test ]
+    needs: [ build, test ]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-#      - uses: actions/download-artifact@v2.0.10
-#        with:
-#          name: petclinic_jarfile
+      - uses: actions/download-artifact@v2.0.10
+        with:
+          name: petclinic_jarfile
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
-      - name: Upload jar to artifactory
-        env:
-          GITHASH: echo "${GITHUB_SHA::8}"
-          GITTAG: $(${{ env.GITHUB_REF }}#refs/*/)
+      - name: Set env for version name
         run: |
-          echo "GITHUB_SHA: ${GITHASH}"
-          echo "GITHUB_SHA: $GITHASH"
+          echo "GITHASH=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+          echo "GITTAG=$(echo $GITHUB_REF#refs/*/)" >> $GITHUB_ENV
+          echo "GITVERSION=$(git describe --tags)" >> $GITHUB_ENV
+      - name: Upload jar to artifactory
+        run: |
           jfrog rt ping
           jfrog rt u "./spring-petclinic-$GITHASH.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
