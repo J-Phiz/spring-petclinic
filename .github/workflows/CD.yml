@@ -4,20 +4,23 @@ name: CD
 
 # Controls when the workflow will run
 on:
+  push:
+    tags: [ ]
+    
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
   # Run CI workflow before
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+#  workflow_run:
+#    workflows: ["CI"]
+#    types:
+#      - completed
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   get-artifactory:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.ref, 'refs/tags/v') }}
+#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -34,11 +37,10 @@ jobs:
       - name: Set env for version name
         run: |
           echo "GITHASH=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-          echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Get from Artifactory
         run: |
           jfrog rt ping
-          jfrog rt dl "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" petclinic.jar --flat=true
+          jfrog rt dl "default-maven-local/petclinic/petclinic-$GITHASH.jar" petclinic.jar --flat=true
       - name: check jar file
         run: test -f petclinic.jar
       - name: copy file via ssh key
