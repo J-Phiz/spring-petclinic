@@ -87,9 +87,10 @@ jobs:
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
+      - name: Upload jar to artifactory
+        env:
           GITHASH: ${GITHUB_SHA::8}
           GITTAG: ${GITHUB_REF#refs/*/}
-      - name: Upload jar to artifactory
         run: |
           echo "GITHASH=${GITHUB_SHA::8}" >> $GITHUB_ENV
           echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
