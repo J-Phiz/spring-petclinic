@@ -14,26 +14,8 @@ on:
         default: "HEAD"
 
 
-jobs:
-  set-env:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.githash }}
-      - name: Set env
-        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Test
-        run: echo $GITHUB_SHA_SHORT
-      - name: Set github var env
-        run: |
-          echo "GITHASH=${GITHUB_SHA::8}" >> $GITHUB_ENV
-          echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo $GITHASH
-          echo $GITHUB_ENV
-  
+jobs:  
   dependencies:
-    needs: set-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -82,23 +64,21 @@ jobs:
         run: mvn -B test --file pom.xml
   
   upload-artifactory:
-#    needs: [ build, test ]
+    needs: [ build, test ]
     runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/tags/v*'
     steps:
-#      - uses: actions/download-artifact@v2.0.10
-#        with:
-#          name: petclinic_jarfile
+      - uses: actions/download-artifact@v2.0.10
+        with:
+          name: petclinic_jarfile
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
       - name: Set env for version name
         run: |
           echo "GITHASH=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-          echo "GITTMP=$(echo $GITHUB_REF)" >> $GITHUB_ENV
           echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "GITVERSION=$(`git describe --tags`)" >> $GITHUB_ENV
       - name: Upload jar to artifactory
         run: |
           jfrog rt ping
-          jfrog rt u "./spring-petclinic-$GITHASH.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
+          jfrog rt u "./spring-petclinic-*.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
