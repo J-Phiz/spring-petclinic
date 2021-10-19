@@ -77,7 +77,7 @@ jobs:
         run: mvn -B test --file pom.xml
   
   upload-artifactory:
-    needs: [ build, test ]
+#    needs: [ build, test ]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -92,5 +92,6 @@ jobs:
           GITHASH: $(${{ env.GITHUB_SHA }}::8)
           GITTAG: $(${{ env.GITHUB_REF }}#refs/*/)
         run: |
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
           jfrog rt ping
           jfrog rt u "./spring-petclinic-$GITHASH.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
