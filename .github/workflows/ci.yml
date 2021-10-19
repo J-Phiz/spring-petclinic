@@ -3,7 +3,6 @@ name: CI
 on:
   push:
     branches: [  ]
-    tags: [ ]
   pull_request:
     branches: [  ]
   # Allows you to run this workflow manually from the Actions tab
@@ -66,7 +65,7 @@ jobs:
   upload-artifactory:
     needs: [ build, test ]
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/download-artifact@v2.0.10
         with:
@@ -77,8 +76,7 @@ jobs:
       - name: Set env for version name
         run: |
           echo "GITHASH=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-          echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Upload jar to artifactory
         run: |
           jfrog rt ping
-          jfrog rt u "./spring-petclinic-*.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
+          jfrog rt u "./spring-petclinic-*.jar" "default-maven-local/petclinic/petclinic-$GITHASH.jar" --flat=true
