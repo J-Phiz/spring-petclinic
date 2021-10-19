@@ -94,8 +94,9 @@ jobs:
       - name: Set env for version name
         run: |
           echo "GITHASH=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-          echo "GITTAG=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV
-          echo "GITVERSION=$(echo `git describe --tags`)" >> $GITHUB_ENV
+          echo "GITTMP=$(echo $GITHUB_REF)" >> $GITHUB_ENV
+          echo "GITTAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          #echo "GITVERSION=$(echo `git describe --tags`)" >> $GITHUB_ENV
       - name: Upload jar to artifactory
         run: |
           jfrog rt ping
