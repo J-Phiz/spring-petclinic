@@ -10,7 +10,6 @@ on:
   # Run CI workflow before
   workflow_run:
     workflows: ["CI"]
-    branches: ["main"]
     types:
       - completed
 
