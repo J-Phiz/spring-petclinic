@@ -89,7 +89,7 @@ jobs:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
       - name: Upload jar to artifactory
         env:
-          GITHASH: ${GITHUB_SHA::8}
+          GITHASH: echo "${GITHUB_SHA::8}"
           GITTAG: $(${{ env.GITHUB_REF }}#refs/*/)
         run: |
           echo "GITHUB_SHA: ${GITHASH}"
