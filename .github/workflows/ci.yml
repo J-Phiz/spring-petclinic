@@ -81,9 +81,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/download-artifact@v2.0.10
-        with:
-          name: petclinic_jarfile
+#      - uses: actions/download-artifact@v2.0.10
+#        with:
+#          name: petclinic_jarfile
       - uses: jfrog/setup-jfrog-cli@v2
         env:
           JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY_TOKEN }}
