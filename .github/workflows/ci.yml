@@ -92,6 +92,6 @@ jobs:
           GITHASH: $(${{ env.GITHUB_SHA }}::8)
           GITTAG: $(${{ env.GITHUB_REF }}#refs/*/)
         run: |
-          echo "GITHUB_SHA: ${GITHUB_SHA:8}"
+          echo "GITHUB_SHA: ${GITHUB_SHA::8}"
           jfrog rt ping
           jfrog rt u "./spring-petclinic-$GITHASH.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
