@@ -90,7 +90,7 @@ jobs:
       - name: Upload jar to artifactory
         env:
           GITHASH: $(${{ env.GITHUB_SHA }}::8)
-          GITTAG: ${{ env.GITHUB_REF#refs/*/ }}
+          GITTAG: $(${{ env.GITHUB_REF }}#refs/*/)
         run: |
           jfrog rt ping
           jfrog rt u "./spring-petclinic-$GITHASH.jar" "default-maven-local/petclinic/$GITTAG/petclinic-$GITHASH.jar" --flat=true
