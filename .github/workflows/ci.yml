@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [  ]
+    tags: [ ]
   pull_request:
     branches: [  ]
   # Allows you to run this workflow manually from the Actions tab
