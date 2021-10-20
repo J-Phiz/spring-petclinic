@@ -76,6 +76,7 @@ pipeline {
         }
     }
 
+    stages {
     stage('Cleanup Workspace') {
         steps {
             cleanWs()
@@ -112,5 +113,6 @@ pipeline {
 
     stage ('Publish build info') {
         server.publishBuildInfo buildInfo
+    }
     }
 }
