@@ -37,9 +37,11 @@ pipeline {
         stage(' Unit Testing') {
             steps {
                 sh """
-                echo "Running Unit Tests" &&
-                mvn -B test
+                echo "Running Unit Tests"
                 """
+                withMaven {
+                    sh "mvn -B test"
+                }
             }
         }
 
@@ -50,14 +52,15 @@ pipeline {
             steps {
                 sh """
                 echo "Building Artifact"
-                mvn -Dmaven.test.skip=true -DskipTests -B package
                 """
+                withMaven {
+                    sh "mvn -Dmaven.test.skip=true -DskipTests -B package"
+                }
 
                 sh """
                 echo "Deploying Code"
                 """
             }
         }
-
     }   
 }
