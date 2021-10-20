@@ -5,6 +5,9 @@ pipeline {
             label 'master'
         }
     }
+    tools {
+        maven 'MAVEN'
+    }
 
     options {
         buildDiscarder logRotator( 
@@ -38,10 +41,8 @@ pipeline {
             steps {
                 sh """
                 echo "Running Unit Tests"
+                mvn -B test
                 """
-                withMaven {
-                    sh "mvn -B test"
-                }
             }
         }
 
@@ -52,10 +53,8 @@ pipeline {
             steps {
                 sh """
                 echo "Building Artifact"
+                mvn -Dmaven.test.skip=true -DskipTests -B package
                 """
-                withMaven {
-                    sh "mvn -Dmaven.test.skip=true -DskipTests -B package"
-                }
 
                 sh """
                 echo "Deploying Code"
