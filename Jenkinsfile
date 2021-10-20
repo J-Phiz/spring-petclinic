@@ -67,10 +67,14 @@
         }
     }   
 }*/
-node {
-    def server
-    def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo
+pipeline {
+    agent {
+        node {
+            def server
+            def rtMaven = Artifactory.newMavenBuild()
+            def buildInfo
+        }
+    }
 
     stage('Cleanup Workspace') {
         steps {
