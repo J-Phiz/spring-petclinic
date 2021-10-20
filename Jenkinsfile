@@ -101,8 +101,8 @@ pipeline {
 
         // Tool name from Jenkins configuration
         rtMaven.tool = Maven
-        rtMaven.deployer releaseRepo: default-maven-local, snapshotRepo: default-maven-local, server: server
-        rtMaven.resolver releaseRepo: default-maven-virtual, snapshotRepo: default-maven-virutal, server: server
+        rtMaven.deployer releaseRepo: 'default-maven-local', snapshotRepo: 'default-maven-local', server: server
+        rtMaven.resolver releaseRepo: 'default-maven-virtual', snapshotRepo: 'default-maven-virutal', server: server
         buildInfo = Artifactory.newBuildInfo()
     }
 
