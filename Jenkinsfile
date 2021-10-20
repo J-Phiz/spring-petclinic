@@ -37,26 +37,20 @@ pipeline {
         stage(' Unit Testing') {
             steps {
                 sh """
-                echo "Running Unit Tests"
-                """
-            }
-        }
-
-        stage('Code Analysis') {
-            steps {
-                sh """
-                echo "Running Code Analysis"
+                echo "Running Unit Tests" &&
+                mvn -B test
                 """
             }
         }
 
         stage('Build Deploy Code') {
             when {
-                branch 'develop'
+                branch 'main'
             }
             steps {
                 sh """
                 echo "Building Artifact"
+                mvn -Dmaven.test.skip=true -DskipTests -B package
                 """
 
                 sh """
