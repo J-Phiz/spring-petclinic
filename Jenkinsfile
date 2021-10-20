@@ -1,4 +1,4 @@
-pipeline {
+/*pipeline {
 
     agent {
         node {
@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        stage(' Unit Testing') {
+        stage('Unit Testing') {
             steps {
                 sh """
                 echo "Running Unit Tests"
@@ -46,21 +46,67 @@ pipeline {
             }
         }
 
-        stage('Build Deploy Code') {
-            when {
-                branch 'main'
-            }
+        stage('Build Code') {
             steps {
                 sh """
                 echo "Building Artifact"
                 mvn -Dmaven.test.skip=true -DskipTests -B package
                 """
+            }
+        }
 
-                
+        stage('Deploy Code') {
+            when {
+                branch 'main'
+            }
+            steps {
                 sh """
-                echo "Deploying Code"
+                echo "Deploy to Artifactory"
                 """
             }
         }
     }   
+}*/
+node {
+    def server
+    def rtMaven = Artifactory.newMavenBuild()
+    def buildInfo
+
+    stage('Cleanup Workspace') {
+        steps {
+            cleanWs()
+            sh """
+            echo "Cleaned Up Workspace For Project"
+            """
+        }
+    }
+
+    stage('Code Checkout') {
+        steps {
+            checkout([
+                $class: 'GitSCM', 
+                branches: [[name: '*/main']], 
+                userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
+            ])
+        }
+    }
+
+    stage ('Artifactory configuration') {
+        // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
+        server = Artifactory.server jphiz
+
+        // Tool name from Jenkins configuration
+        rtMaven.tool = Maven
+        rtMaven.deployer releaseRepo: default-maven-local, snapshotRepo: default-maven-local, server: server
+        rtMaven.resolver releaseRepo: default-maven-virtual, snapshotRepo: default-maven-virutal, server: server
+        buildInfo = Artifactory.newBuildInfo()
+    }
+
+    stage ('Exec Maven') {
+        rtMaven.run goals: 'clean install', buildInfo: buildInfo
+    }
+
+    stage ('Publish build info') {
+        server.publishBuildInfo buildInfo
+    }
 }
