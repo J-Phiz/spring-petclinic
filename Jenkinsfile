@@ -176,7 +176,7 @@ pipeline {
             steps {
                 rtUpload (
                     // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
-                    serverId: jphiz,
+                    serverId: 'jphiz',
                     spec: """{
                             "files": [
                                     {
