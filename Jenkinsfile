@@ -67,12 +67,14 @@
         }
     }   
 }*/
+
 pipeline {
+
     agent {
         node {
-            def server
-            def rtMaven = Artifactory.newMavenBuild()
-            def buildInfo
+ //           def server
+ //           def rtMaven = Artifactory.newMavenBuild()
+ //           def buildInfo
             label 'master'
         }
     }
