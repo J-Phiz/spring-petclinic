@@ -51,7 +51,7 @@ pipeline {
                             verbose: true,
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: "petclinic.jar"
+                                    sourceFiles: "/var/jenkins_home/workspace/petclinic-pipeline-cd_main/petclinic.jar"
 //                                    execCommand: "sudo systemctl start petclinic@group2.service && sudo systemctl start petclinic@group2.service"
 //                                    execCommand: "pwd && ls -la"
                                 )
