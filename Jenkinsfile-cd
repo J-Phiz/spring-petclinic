@@ -43,6 +43,7 @@ pipeline {
         stage('Upload and run on AWS') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
                 sh 'ls -l'
+                sh 'ssh group2@cda.cefim-formation.org ls -l'
                 sshPublisher(
                     continueOnError: false, failOnError: true,
                     publishers: [
