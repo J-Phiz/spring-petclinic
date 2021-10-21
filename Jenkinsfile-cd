@@ -1,0 +1,63 @@
+pipeline {
+
+    agent {
+        node {
+            label 'master'
+        }
+    }
+       
+    options {
+        buildDiscarder logRotator( 
+                    daysToKeepStr: '16', 
+                    numToKeepStr: '10'
+            )
+    }
+
+    stages {
+        stage('Cleanup Workspace') { 
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+        
+        stage('Download from Artifactory') {
+            steps {
+                rtDownload (
+                    // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
+                    serverId: 'jphiz',
+                    spec: """{
+                            "files": [
+                                    {
+                                        "pattern": "default-maven-local/petclinic/2.5.0/spring-petclinic-2.5.0.jar"
+                                        "target": "petclinic.jar",
+                                    }
+                                ]
+                            }"""
+                )
+            }
+        }
+        
+        stage('Upload and run on AWS') {
+            steps([$class: 'BapSshPromotionPublisherPlugin']) {
+                sshPublisher(
+                    continueOnError: false, failOnError: true,
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: "aws cefim",
+                            verbose: true,
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "*.jar",
+                                    execCommand: "sudo systemctl start petclinic@group2.service && sudo systemctl start petclinic@group2.service"
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+    }
+}
