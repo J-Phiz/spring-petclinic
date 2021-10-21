@@ -42,6 +42,7 @@ pipeline {
         
         stage('Upload and run on AWS') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
+                sh 'ls -la'
                 sshPublisher(
                     continueOnError: false, failOnError: true,
                     publishers: [
@@ -50,8 +51,9 @@ pipeline {
                             verbose: true,
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: "./petclinic.jar",
-                                    execCommand: "sudo systemctl start petclinic@group2.service && sudo systemctl start petclinic@group2.service"
+                                    sourceFiles: "./petclinic.jar"
+//                                    execCommand: "sudo systemctl start petclinic@group2.service && sudo systemctl start petclinic@group2.service"
+//                                    execCommand: "pwd && ls -la"
                                 )
                             ]
                         )
