@@ -52,7 +52,7 @@ pipeline {
                             verbose: true,
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: "petclinic.jar",
+                                    sourceFiles: "./petclinic.jar",
 //                                    execCommand: "sudo systemctl start petclinic@group2.service && sudo systemctl start petclinic@group2.service"
                                     execCommand: "pwd ; ls"
                                 )
