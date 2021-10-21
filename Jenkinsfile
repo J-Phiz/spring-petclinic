@@ -138,6 +138,9 @@ pipeline {
     agent {
         node {
             label 'master'
+            def server
+            def rtMaven = Artifactory.newMavenBuild()
+            def buildInfo
         }
     }
     
