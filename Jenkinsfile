@@ -138,9 +138,6 @@ pipeline {
     agent {
         node {
             label 'master'
-            def server
-            def rtMaven = Artifactory.newMavenBuild()
-            def buildInfo
         }
     }
     
@@ -172,6 +169,23 @@ pipeline {
                     branches: [[name: '*/main']], 
                     userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
                 ])
+            }
+        }
+        
+        stage ('Upload file') {
+            steps {
+                rtUpload (
+                    // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
+                    serverId: jphiz,
+                    spec: """{
+                            "files": [
+                                    {
+                                        "pattern": "target/spring-petclinic-2.5.0-SNAPSHOT.jar",
+                                        "target": "default-maven-local"
+                                    }
+                                ]
+                            }"""
+                )
             }
         }
     }
