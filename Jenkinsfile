@@ -77,42 +77,42 @@ pipeline {
     }
 
     stages {
-    stage('Cleanup Workspace') {
-        steps {
-            cleanWs()
-            sh """
-            echo "Cleaned Up Workspace For Project"
-            """
+        stage('Cleanup Workspace') { 
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
         }
-    }
 
-    stage('Code Checkout') {
-        steps {
-            checkout([
-                $class: 'GitSCM', 
-                branches: [[name: '*/main']], 
-                userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
-            ])
+        stage('Code Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/main']], 
+                    userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
+                ])
+            }
         }
-    }
 
-    stage ('Artifactory configuration') {
-        // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
-        server = Artifactory.server jphiz
+        stage ('Artifactory configuration') {
+            // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
+            server = Artifactory.server jphiz
 
-        // Tool name from Jenkins configuration
-        rtMaven.tool = Maven
-        rtMaven.deployer releaseRepo: 'default-maven-local', snapshotRepo: 'default-maven-local', server: server
-        rtMaven.resolver releaseRepo: 'default-maven-virtual', snapshotRepo: 'default-maven-virutal', server: server
-        buildInfo = Artifactory.newBuildInfo()
-    }
+            // Tool name from Jenkins configuration
+            rtMaven.tool = Maven
+            rtMaven.deployer releaseRepo: 'default-maven-local', snapshotRepo: 'default-maven-local', server: server
+            rtMaven.resolver releaseRepo: 'default-maven-virtual', snapshotRepo: 'default-maven-virutal', server: server
+            buildInfo = Artifactory.newBuildInfo()
+        }
 
-    stage ('Exec Maven') {
-        rtMaven.run goals: 'clean install', buildInfo: buildInfo
-    }
+        stage ('Exec Maven') {
+            rtMaven.run goals: 'clean install', buildInfo: buildInfo
+        }
 
-    stage ('Publish build info') {
-        server.publishBuildInfo buildInfo
-    }
+        stage ('Publish build info') {
+            server.publishBuildInfo buildInfo
+        }
     }
 }
