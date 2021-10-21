@@ -73,6 +73,7 @@ pipeline {
             def server
             def rtMaven = Artifactory.newMavenBuild()
             def buildInfo
+            label 'master'
         }
     }
     
@@ -107,7 +108,7 @@ pipeline {
             }
         }
 
-        stage ('Artifactory configuration') {
+/*        stage ('Artifactory configuration') {
             // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
             server = Artifactory.server jphiz
 
@@ -124,6 +125,6 @@ pipeline {
 
         stage ('Publish build info') {
             server.publishBuildInfo buildInfo
-        }
+        }*/
     }
 }
