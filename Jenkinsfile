@@ -1,4 +1,5 @@
-/*pipeline {
+/*
+pipeline {
 
     agent {
         node {
@@ -66,7 +67,7 @@
             }
         }
     }   
-}*/
+}
 
 pipeline {
 
@@ -104,13 +105,13 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
+                    branches: [[name: 'main']], 
                     userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
                 ])
             }
         }
 
-/*        stage ('Artifactory configuration') {
+        stage ('Artifactory configuration') {
             // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
             server = Artifactory.server jphiz
 
@@ -127,6 +128,48 @@ pipeline {
 
         stage ('Publish build info') {
             server.publishBuildInfo buildInfo
-        }*/
+        }
+    }
+}
+*/
+
+pipeline {
+
+    agent {
+        node {
+            label 'master'
+        }
+    }
+    
+    tools {
+        maven 'Maven'
+    }
+    
+    options {
+        buildDiscarder logRotator( 
+                    daysToKeepStr: '16', 
+                    numToKeepStr: '10'
+            )
+    }
+
+    stages {
+        stage('Cleanup Workspace') { 
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+
+        stage('Code Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/main']], 
+                    userRemoteConfigs: [[url: 'https://github.com/J-Phiz/spring-petclinic.git/']]
+                ])
+            }
+        }
     }
 }
