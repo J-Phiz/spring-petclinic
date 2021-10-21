@@ -31,8 +31,8 @@ pipeline {
                     spec: """{
                             "files": [
                                     {
-                                        "pattern": "default-maven-local/petclinic/2.5.0/spring-petclinic-2.5.0.jar"
-                                        "target": "petclinic.jar",
+                                        "pattern": "default-maven-local/petclinic/2.5.0/spring-petclinic-2.5.0.jar",
+                                        "target": "petclinic.jar"
                                     }
                                 ]
                             }"""
