@@ -122,15 +122,23 @@ pipeline {
             steps {
                 rtUpload (
                     // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
-                    serverId: SERVER_ID,
+                    serverId: 'jphiz',
                     spec: """{
                             "files": [
                                     {
-                                        "pattern": "target/spring-petclinic-2.5.0-SNAPSHOT.jar",
-                                        "target": "default-maven-local"
+                                        "pattern": "target/spring-petclinic*.jar",
+                                        "target": "default-maven-local/petclinic/2.5.0/spring-petclinic-2.5.0.jar"
                                     }
                                 ]
                             }"""
+                )
+            }
+        }
+        
+        stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: 'jphiz'
                 )
             }
         }
