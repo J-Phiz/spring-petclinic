@@ -109,16 +109,26 @@ pipeline {
             }
         }
 
-        stage('Build Code') {
+        stage('Tests and Build') {
             steps {
-                sh """
-                echo "Building Artifact"
-                mvn -Dmaven.test.skip=true -DskipTests -B package
-                """
+                parallel(
+                    tests: {    
+                        sh """
+                        echo "Running Unit Tests"
+                        mvn -B test
+                        """
+                    },
+                    build: {
+                        sh """
+                        echo "Building Artifact"
+                        mvn -Dmaven.test.skip=true -DskipTests -B package
+                        """
+                    }
+                )
             }
         }
         
-        stage ('Upload file') {
+        stage('Upload to Artifactory') {
             steps {
                 rtUpload (
                     // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:
@@ -135,7 +145,7 @@ pipeline {
             }
         }
         
-        stage ('Publish build info') {
+        stage('Publish build info to Artifactory') {
             steps {
                 rtPublishBuildInfo (
                     serverId: 'jphiz'
